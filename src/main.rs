@@ -25,9 +25,11 @@ q) Quit ";
     println!("{greeting}");
         
     loop {
-        io::stdout().flush().unwrap();
-        
-        print!("Choice: ");
+        use std::io::{stdout, Write};
+
+        let mut lock = stdout().lock();
+        write!(lock, "Choice: ").unwrap(); // Might need to trap errors here
+        lock.flush().expect("Failed to flush stdout.");
         
         let mut choice = String::new();
         
