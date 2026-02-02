@@ -43,9 +43,13 @@ fn add_employee(departments: &Vec<String>) {
 
     let choice: i32 = menu_prompt().parse().unwrap();
     
-    let department:&Option<&String> = &d_map.get(&choice).unwrap();
-
-    //println!("You chose: {:?}", department);
+    let department:&Option<&String> = &d_map.get(&choice);
+    if let Some(department) = department {
+        println!("Adding employee to the {department} department.");
+    } else {
+        // I don't think this branch is ever reached
+        println!("Please enter a valid department choice.");
+    }
     
 }
 
