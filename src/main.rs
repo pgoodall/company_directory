@@ -1,53 +1,95 @@
-use std::io::{self, Write};
+//use std::io::{self, Write};
 
-fn add_employee() {
-    println!("Adding an employee...");
-}
+//use std::{collections::HashMap, ops::Index};
 
-fn edit_employee() {
-    println!("Editing an empoyee...");
-}
-
-fn list_employees() {
-    println!("Listing employees...");
-}
-
-fn main() {
-    let greeting: &'static str = "
-Company Directory
------------------
-Choose from one of the options below:
-a) Add an employee to the directory
-e) Edit an existing employee record
-l) List the current employees
-q) Quit ";
-
-    println!("{greeting}");
-        
+fn menu_prompt() -> String {
     loop {
-        use std::io::{stdout, Write};
+        use std::io::{self, stdout, Write};
+        let mut choice = String::new();
 
         let mut lock = stdout().lock();
         write!(lock, "Choice: ").unwrap(); // Might need to trap errors here
         lock.flush().expect("Failed to flush stdout.");
-        
-        let mut choice = String::new();
-        
+    
         io::stdin()
             .read_line(&mut choice)
             .expect("Failed to read choice.");
-        
-        let choice: char = match choice.trim().parse() {
-            Ok(char) => char,
-            Err(_) => continue
+
+        let choice: String = match choice.trim().parse() {
+            Ok(choice) => choice,
+            Err(_) => continue,
         };
 
-        match choice {
-            'a' => add_employee(),
-            'e' => edit_employee(),
-            'l' => list_employees(),
-            'q' => break,
-            _ => println!("Please enter a valid choice")
-        }
+        return choice;
+    };
+}
+
+fn add_employee(departments: &Vec<String>) {
+    use std::collections::HashMap;
+    
+    let mut d_map: HashMap<i32, String> = HashMap::new();
+
+    println!("\nAdding an employee to a department");
+    println!("----------------------------------");
+
+    println!("Choose a department from the options below:");
+    let mut count: i32 = 1;
+    for d in departments {
+        println!("{count}) {d}");
+        d_map.insert(count, String::from(d));
+        count += 1;
+
     }
+
+    let choice: i32 = menu_prompt().parse().unwrap();
+    
+    let department:&Option<&String> = &d_map.get(&choice).unwrap();
+
+    //println!("You chose: {:?}", department);
+    
+}
+
+fn edit_employee() {
+    println!("Editing an employee...");
+}
+
+fn list_all_employees() {
+    println!("Listing all employees by department...");
+}
+
+fn list_by_department() {
+    println!("List employees in a department...");
+}
+
+fn main() {
+    const GREETING: &str = "
+Company Directory
+-----------------
+Choose from one of the options below:
+a) Add an employee to a department
+e) Edit an existing employee record
+l) List employees across all departments
+d) List employees in a department
+q) Quit ";
+
+    println!("{GREETING}");
+
+    let departments: Vec<String> = vec![String::from("Engineering"), 
+                                        String::from("Sales"), 
+                                        String::from("Marketing"), 
+                                        String::from("Product"), 
+                                        String::from("Legal"), 
+                                        String::from("Customer Success")];
+
+    let choice = menu_prompt();
+
+    match choice.as_str() {
+        "a" => add_employee(&departments),
+        "e" => edit_employee(),
+        "l" => list_all_employees(),
+        "d" => list_by_department(),
+        "q" => println!("Goodbye."),
+        _ => println!("Please enter a valid choice")
+        }
+
 }
