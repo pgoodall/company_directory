@@ -1,7 +1,10 @@
+// ----------------------------------------------------------- //
+// Switch departments to IndexMap to make it easier to sort?   //
+// ----------------------------------------------------------- //
+
 pub mod departments {
     use std::collections::HashMap;
     pub fn list() -> HashMap<i32, String> {
-        //use std::collections::HashMap;
         let mut d_map: HashMap<i32, String> = HashMap::new();
 
         let departments: Vec<String> = vec![String::from("Engineering"), 
@@ -34,10 +37,17 @@ pub mod employees {
 
         println!("Choose a department from the options below:");
         let departments_list: HashMap<i32, String> = departments::list();
-        for (k, v) in &departments_list {
-            println!("{k}) {v}")
-        }
 
+        //The HashMap is returned in random order, so I use this to order the output
+        let mut count: i32 = 1;
+        while (count as usize) < departments_list.len() {
+            if let Some(row) = departments_list.get_key_value(&count) {
+                println!("{:?}) {}", row.0, row.1);
+            }
+
+            count += 1
+        }
+        
         let choice: i32 = prompt::get_input().parse().unwrap();
         
         let department:&Option<&String> = &departments_list.get(&choice);

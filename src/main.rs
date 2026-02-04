@@ -30,8 +30,8 @@ Company Directory
 Choose from one of the options below:
 a) Add an employee to a department
 e) Edit an existing employee record
-l) List employees across all departments
-d) List employees in a department
+l) List all employees
+d) List employees by department
 q) Quit ";
 
     println!("{GREETING}");
