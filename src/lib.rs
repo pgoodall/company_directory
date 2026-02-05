@@ -1,7 +1,3 @@
-// ----------------------------------------------------------- //
-// Switch departments to IndexMap to make it easier to sort?   //
-// ----------------------------------------------------------- //
-
 pub mod departments {
     use std::collections::HashMap;
     pub fn list() -> HashMap<i32, String> {
@@ -48,15 +44,13 @@ pub mod employees {
             count += 1
         }
         
-        let choice: i32 = prompt::get_input().parse().unwrap();
+        let choice: i32 = prompt::get_input("Choice").parse().unwrap();
         
         let department:&Option<&String> = &departments_list.get(&choice);
         if let Some(department) = department {
-            println!("Adding employee to the {department} department.");
-        } else {
-            // I don't think this branch is ever reached
-            println!("Please enter a valid department choice.");
-        }
+            let choice: String = prompt::get_input("Name").parse().unwrap();
+            println!("Adding {} to the {} department.", choice, department);
+        } 
 
     }
 
@@ -74,13 +68,13 @@ pub mod employees {
 }
 
 pub mod prompt {
-    pub fn get_input () -> String {
+    pub fn get_input(p: &str) -> String {
         loop {
             use std::io::{self, stdout, Write};
             let mut choice = String::new();
 
             let mut lock = stdout().lock();
-            write!(lock, "Choice: ").unwrap(); // Might need to trap errors here
+            write!(lock, "{p}: ").unwrap(); // Might need to trap errors here
             lock.flush().expect("Failed to flush stdout.");
         
             io::stdin()
