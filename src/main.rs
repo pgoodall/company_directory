@@ -1,6 +1,9 @@
 fn main() {
     use company_directory::employees;
     use company_directory::prompt;
+    use std::collections::HashMap;
+
+    let mut directory: HashMap<String, String> = HashMap::new();
 
     const GREETING: &str = "
 Company Directory
@@ -12,17 +15,19 @@ l) List all employees
 d) List employees by department
 q) Quit ";
 
-    println!("{GREETING}");
+    loop {
+        println!("{GREETING}");
 
-    let choice = prompt::get_input("Choice");
+        let choice = prompt::get_input("Choice");
 
-    match choice.as_str() {
-        "a" => employees::add_employee(),
-        "e" => employees::edit_employee(),
-        "l" => employees::list_all_employees(),
-        "d" => employees::list_by_department(),
-        "q" => println!("Goodbye."),
-        _ => println!("Please enter a valid choice")
-        }
+        match choice.as_str() {
+            "a" => directory = employees::add_employee(directory),
+            "e" => employees::edit_employee(),
+            "l" => employees::list_all_employees(&directory),
+            "d" => employees::list_by_department(),
+            "q" => { println!("Goodbye."); break },
+            _ => println!("Please enter a valid choice")
+            }
+    }
 
 }

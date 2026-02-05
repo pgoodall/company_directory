@@ -23,7 +23,9 @@ pub mod departments {
 }
 
 pub mod employees {
-    pub fn add_employee() {
+    use std::collections::HashMap;
+
+    pub fn add_employee(directory: HashMap<String, String>) -> HashMap<String, String> {
         use crate::prompt;
         use crate::departments;
         use std::collections::HashMap;
@@ -33,6 +35,7 @@ pub mod employees {
 
         println!("Choose a department from the options below:");
         let departments_list: HashMap<i32, String> = departments::list();
+        let mut dir: HashMap<String,String> = directory;
 
         //The HashMap is returned in random order, so I use this to order the output
         let mut count: i32 = 1;
@@ -48,9 +51,12 @@ pub mod employees {
         
         let department:&Option<&String> = &departments_list.get(&choice);
         if let Some(department) = department {
-            let choice: String = prompt::get_input("Name").parse().unwrap();
-            println!("Adding {} to the {} department.", choice, department);
+            let name: String = prompt::get_input("Name").parse().unwrap();
+            let department: String = department.parse().unwrap();
+            dir.entry(department).or_insert(name);
         } 
+
+        return dir
 
     }
 
@@ -58,13 +64,16 @@ pub mod employees {
         println!("Editing an employee...");
     }
 
-    pub fn list_all_employees() {
-        println!("Listing all employees...")
+    pub fn list_all_employees(directory: &HashMap<String, String>) {
+        for row in directory {
+            println!("{row:?}");
+        }
     }
 
     pub fn list_by_department() {
         println!("Listing employees by department...")
     }
+
 }
 
 pub mod prompt {
