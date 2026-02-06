@@ -23,7 +23,7 @@ pub mod departments {
 }
 
 pub mod employees {
-    use std::collections::HashMap;
+    use std::collections::{HashMap, btree_set::Difference};
 
     pub fn add_employee(directory: HashMap<String, String>) -> HashMap<String, String> {
         use crate::prompt;
@@ -70,8 +70,12 @@ pub mod employees {
         }
     }
 
-    pub fn list_by_department() {
-        println!("Listing employees by department...")
+    pub fn list_by_department(directory: &HashMap<String, String>) {
+        for department in directory {
+            if let Some(row) = directory.get_key_value(&department) {
+                println!("| {} | {} |", row.0, row.1);
+            }
+        }
     }
 
 }

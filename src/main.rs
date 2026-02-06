@@ -24,7 +24,7 @@ q) Quit ";
             "a" => directory = employees::add_employee(directory),
             "e" => employees::edit_employee(),
             "l" => employees::list_all_employees(&directory),
-            "d" => employees::list_by_department(),
+            "d" => employees::list_by_department(&directory),
             "q" => { println!("Goodbye."); break },
             _ => println!("Please enter a valid choice")
             }
