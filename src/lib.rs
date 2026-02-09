@@ -3,17 +3,17 @@ pub mod departments {
     pub fn list() -> HashMap<i32, String> {
         let mut d_map: HashMap<i32, String> = HashMap::new();
 
-        let departments: Vec<String> = vec![String::from("Engineering"), 
-                                        String::from("Sales"), 
-                                        String::from("Marketing"), 
-                                        String::from("Product"), 
-                                        String::from("Legal"), 
-                                        String::from("Customer Success")];
+        let departments: Vec<&str> = vec!["Engineering", 
+                                        "Sales", 
+                                        "Marketing", 
+                                        "Product", 
+                                        "Legal", 
+                                        "Customer Success"];
         
         // Build a HashMap in order to choose department
         let mut count: i32 = 1;
-        for d in departments {
-            d_map.insert(count, String::from(d));
+        for d in &departments {
+            d_map.insert(count,  d.to_string());
             count += 1;
         }
 
@@ -23,9 +23,9 @@ pub mod departments {
 }
 
 pub mod employees {
-    use std::collections::{HashMap, btree_set::Difference};
+    use std::collections::HashMap;
 
-    pub fn add_employee(directory: HashMap<String, String>) -> HashMap<String, String> {
+    pub fn add_employee(mut directory: HashMap<String, String>) -> HashMap<String, String> {
         use crate::prompt;
         use crate::departments;
         use std::collections::HashMap;
@@ -35,7 +35,7 @@ pub mod employees {
 
         println!("Choose a department from the options below:");
         let departments_list: HashMap<i32, String> = departments::list();
-        let mut dir: HashMap<String,String> = directory;
+        //let mut dir: HashMap<String,String> = directory;
 
         //The HashMap is returned in random order, so I use this to order the output
         let mut count: i32 = 1;
@@ -49,14 +49,14 @@ pub mod employees {
         
         let choice: i32 = prompt::get_input("Choice").parse().unwrap();
         
-        let department:&Option<&String> = &departments_list.get(&choice);
+        let department: Option<String> = departments_list.get(&choice).cloned();
         if let Some(department) = department {
-            let name: String = prompt::get_input("Name").parse().unwrap();
-            let department: String = department.parse().unwrap();
-            dir.entry(department).or_insert(name);
+            let name:String  = prompt::get_input("Name");
+            let department:String  = department;
+            directory.entry(department).or_insert(name);
         } 
 
-        return dir
+        return directory
 
     }
 
@@ -71,9 +71,11 @@ pub mod employees {
     }
 
     pub fn list_by_department(directory: &HashMap<String, String>) {
-        for department in directory {
-            if let Some(row) = directory.get_key_value(&department) {
-                println!("| {} | {} |", row.0, row.1);
+        for row in directory {
+            if let Some(row) = row {
+                for (k, v) in directory.get_key_value(row.0) {
+                    println!("| {:?} | {} |", k, v);
+                }
             }
         }
     }
